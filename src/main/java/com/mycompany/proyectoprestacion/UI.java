@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.proyectoprestacion;
+package com.mycompany.magicregister;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -14,19 +14,36 @@ import javax.swing.table.DefaultTableModel;
 public class UI extends javax.swing.JFrame {
 
     private RegistroYControl inventario = new RegistroYControl();
-    private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Equipo", "Cantidad"}, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Hacer que todas las celdas no sean editables
-            }
-        };
+    private DefaultTableModel modeloPrestacion;
+    private DefaultTableModel modeloItem;
+    private String msj;
 
     
     /**
      * Creates new form UI
      */
     public UI() {
+        // Configuracion de las listas
+        // Lista de prestamos 
+        this.modeloItem = new DefaultTableModel(new Object[]{"Equipo", "Cantidad"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Hacer que todas las celdas no sean editables
+            }
+        };
+        // Lista de items
+        this.modeloPrestacion = new DefaultTableModel(new Object[]{"Cliente", "item", "Salon"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Hacer que todas las celdas no sean editables
+            }
+        };
+        msj = "Trabajo en progreso, de momento solo puede registrar equipos\n y registrar prestamos de forma incompleta";
+        
         initComponents();
+        
+        // Valores por defecto
+        iniciarItemDefault();
     }
 
     /**
@@ -57,26 +74,10 @@ public class UI extends javax.swing.JFrame {
         setName("vistaPrincipal"); // NOI18N
         setResizable(false);
 
-        equiposPrestados.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "Cliente", "Salon"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        equiposPrestados.setModel(this.modeloPrestacion);
         jScrollPane1.setViewportView(equiposPrestados);
 
-        equiposDisponibles.setModel(this.modelo);
+        equiposDisponibles.setModel(this.modeloItem);
         equiposDisponibles.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 equiposDisponiblesAncestorAdded(evt);
@@ -97,8 +98,18 @@ public class UI extends javax.swing.JFrame {
         jLabel3.setText("Equipo Prestados");
 
         prestarEquipoButton.setText("Prestar equipo");
+        prestarEquipoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                prestarEquipoButtonActionPerformed(evt);
+            }
+        });
 
         recibirEquipoButton.setText("Recibir equipo");
+        recibirEquipoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                recibirEquipoButtonActionPerformed(evt);
+            }
+        });
 
         registrarEquipoButton.setText("Registrar equipo");
         registrarEquipoButton.addActionListener(new java.awt.event.ActionListener() {
@@ -108,6 +119,11 @@ public class UI extends javax.swing.JFrame {
         });
 
         registrarClienteButton.setText("Registrar cliente");
+        registrarClienteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registrarClienteButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -159,16 +175,26 @@ public class UI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void iniciarItemDefault() {
+        this.inventario.agregarItem("Laptop", 10);
+        this.inventario.agregarItem("Cable HDMI", 10);
+        this.inventario.agregarItem("VideoBeam", 5);
+        
+        for (Item item : inventario.getInventario()) {
+            this.modeloItem.addRow(new Object[]{item.getNombre(), item.getCantidad()});
+        }
+    }
+    
     private void registrarEquipoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarEquipoButtonActionPerformed
         // TODO add your handling code here:
         String nombre = JOptionPane.showInputDialog("¿Que item va a registrar?");
         int cantidad = Integer.parseInt(JOptionPane.showInputDialog("¿Cuantos de " + nombre + " registrara?"));
         this.inventario.agregarItem(nombre, cantidad);
         
-        this.modelo.setRowCount(0);
+        this.modeloItem.setRowCount(0);
         
         for (Item item : inventario.getInventario()) {
-            this.modelo.addRow(new Object[]{item.getNombre(), item.getCantidad()});
+            this.modeloItem.addRow(new Object[]{item.getNombre(), item.getCantidad()});
         }
 
     }//GEN-LAST:event_registrarEquipoButtonActionPerformed
@@ -176,6 +202,35 @@ public class UI extends javax.swing.JFrame {
     private void equiposDisponiblesAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_equiposDisponiblesAncestorAdded
         // TODO add your handling code here:
     }//GEN-LAST:event_equiposDisponiblesAncestorAdded
+
+    private void prestarEquipoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prestarEquipoButtonActionPerformed
+        // TODO add your handling code here:
+        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del cliente");
+        String ocupacion = JOptionPane.showInputDialog("Ingrese la ocupacion del cliente (Maestro/Alumno/Ejecutivo");
+        int id = Integer.parseInt(JOptionPane.showInputDialog("ID del cliente (Universitario)"));
+        String horaEntrega = JOptionPane.showInputDialog("Ingrese la hora del prestamo");
+        String horaRecibo = JOptionPane.showInputDialog("Hora estimada de devolucion");
+        String item = JOptionPane.showInputDialog("¿Que item se prestara?");
+        int salon = Integer.parseInt(JOptionPane.showInputDialog("En que salon se usara el item"));
+        
+        this.inventario.agregarPrestamo(nombre, ocupacion, id, horaEntrega, horaRecibo, salon, item);
+        
+        this.modeloPrestacion.setRowCount(0);
+        
+        for (Prestacion prestacion : inventario.getEquiposPrestados()) {
+            this.modeloPrestacion.addRow(new Object[]{prestacion.getNombre(), prestacion.getItem(), prestacion.getSalon()});
+        }
+    }//GEN-LAST:event_prestarEquipoButtonActionPerformed
+
+    private void recibirEquipoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recibirEquipoButtonActionPerformed
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(rootPane, this.msj, "Caracteristica no disponible", 1);
+    }//GEN-LAST:event_recibirEquipoButtonActionPerformed
+
+    private void registrarClienteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarClienteButtonActionPerformed
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(rootPane, this.msj, "Caracteristica no disponible", 1);
+    }//GEN-LAST:event_registrarClienteButtonActionPerformed
 
     /**
      * @param args the command line arguments

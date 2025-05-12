@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mycompany.proyectoprestacion;
+package com.mycompany.magicregister;
 
 /**
  *
@@ -39,6 +39,10 @@ public class Cliente {
     
     public void setID(int id) {
         this.id = id;
+    }
+    
+    public String getNombre() {
+        return this.nombre;
     }
     
 }
