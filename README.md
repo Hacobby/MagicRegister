@@ -10,3 +10,15 @@ equipos como cámaras, micrófonos, proyectores, cables, entre otros, se maneja 
 manual. Esto ha generado diversos inconvenientes, como pérdidas de equipos, confusión
 respecto a qué elementos han sido prestados, a quiénes, y cuándo deben ser devueltos, además
 de la imposibilidad de verificar en tiempo real la disponibilidad de los recursos.
+
+# Releases
+En la seccion de releases a la derecha podra descargar las versiones disponibles del PMV y un ejecutable
+para mas facilidad de acceso. Debido a la poca experiencia del equipo de desarrollo creando ejecutables cabe la
+posibilidad de que se encuentre con problemas intentando usar el ejecutable, antes de hacer
+un reclamo por favor revise que tenga los siguientes requerimientos instalados:
+
+- Ultima versión de java jre (también conocido como java 8)
+- JDK 22
+
+En teoría no debería necesitar el JDK ya que el ejecutable tiene su propia version dentro de si *(Razon por su peso extra en comparacion con el codigo fuente)*, instale solo en caso de presentar
+problemas.
