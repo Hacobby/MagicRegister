@@ -226,30 +226,83 @@ public class UI extends javax.swing.JFrame {
         }
     }
     
+    private void actualizarListaItem() {
+        this.modeloItem.setRowCount(0);
+        
+        for (Item item : inventario.getInventario()) {
+            this.modeloItem.addRow(new Object[]{item.getNombre(), item.getCantidad()});
+        }
+    }
+    
     private void registrarEquipoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarEquipoButtonActionPerformed
         // TODO add your handling code here:
         String nombre = JOptionPane.showInputDialog("¿Que item va a registrar?");
         int cantidad = Integer.parseInt(JOptionPane.showInputDialog("¿Cuantos de " + nombre + " registrara?"));
         this.inventario.agregarItem(nombre, cantidad);
         
-        this.modeloItem.setRowCount(0);
-        
-        for (Item item : inventario.getInventario()) {
-            this.modeloItem.addRow(new Object[]{item.getNombre(), item.getCantidad()});
-        }
+        actualizarListaItem();
 
     }//GEN-LAST:event_registrarEquipoButtonActionPerformed
 
     private void prestarEquipoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prestarEquipoButtonActionPerformed
         // TODO add your handling code here:
         String nombre = JOptionPane.showInputDialog("Ingrese el nombre del cliente");
-        String ocupacion = JOptionPane.showInputDialog("Ingrese la ocupacion del cliente (Maestro/Alumno/Ejecutivo");
-        int id = Integer.parseInt(JOptionPane.showInputDialog("ID del cliente (Universitario)"));
-        String horaEntrega = JOptionPane.showInputDialog("Ingrese la hora del prestamo");
-        String horaRecibo = JOptionPane.showInputDialog("Hora estimada de devolucion");
-        String item = JOptionPane.showInputDialog("¿Que item se prestara?");
-        int salon = Integer.parseInt(JOptionPane.showInputDialog("En que salon se usara el item"));
         
+        if (nombre.equals("") || nombre.equals(" ")) {
+            JOptionPane.showMessageDialog(rootPane, "Se han ingresado datos invalidos", "Error", 0);
+            return;
+        }        
+        
+        String ocupacion = JOptionPane.showInputDialog("Ingrese la ocupacion del cliente (Maestro/Alumno/Ejecutivo");
+        
+        if (ocupacion.equals("") || ocupacion.equals(" ")) {
+            JOptionPane.showMessageDialog(rootPane, "Se han ingresado datos invalidos", "Error", 0);
+            return;
+        }
+        
+        int id;
+        try {
+            id = Integer.parseInt(JOptionPane.showInputDialog("ID del cliente (Universitario)"));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "Se han ingresado datos invalidos", "Error", 0);
+            return;
+        }
+        
+        String horaEntrega = JOptionPane.showInputDialog("Ingrese la hora del prestamo");
+        
+        if (horaEntrega.equals("") || horaEntrega.equals(" ")) {
+            JOptionPane.showMessageDialog(rootPane, "Se han ingresado datos invalidos", "Error", 0);
+            return;
+        }
+        
+        String horaRecibo = JOptionPane.showInputDialog("Hora estimada de devolucion");
+        
+        if (horaRecibo.equals("") || horaRecibo.equals(" ")) {
+            JOptionPane.showMessageDialog(rootPane, "Se han ingresado datos invalidos", "Error", 0);
+            return;
+        }
+        
+        String item = JOptionPane.showInputDialog("¿Que item se prestara?");
+        
+        if (item.equals("") || item.equals(" ")) {
+            JOptionPane.showMessageDialog(rootPane, "Se han ingresado datos invalidos", "Error", 0);
+            return;
+        }
+        
+        if (!this.inventario.itemExiste(item)) {
+            JOptionPane.showMessageDialog(rootPane, "Este item no existe en el inventario", "Error", 0);
+            return;
+        }
+        
+        int salon;
+        try {
+            salon = Integer.parseInt(JOptionPane.showInputDialog("En que salon se usara el item"));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "Se han ingresado datos invalidos", "Error", 0);
+            return;
+        }
+
+        this.inventario.actualizarItem(item, 1);     
         this.inventario.agregarPrestamo(nombre, ocupacion, id, horaEntrega, horaRecibo, salon, item);
         
         this.modeloPrestacion.setRowCount(0);
@@ -257,6 +310,8 @@ public class UI extends javax.swing.JFrame {
         for (Prestacion prestacion : inventario.getEquiposPrestados()) {
             this.modeloPrestacion.addRow(new Object[]{prestacion.getNombre(), prestacion.getItem(), prestacion.getSalon()});
         }
+        
+        actualizarListaItem();
     }//GEN-LAST:event_prestarEquipoButtonActionPerformed
 
     private void recibirEquipoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recibirEquipoButtonActionPerformed
@@ -272,37 +327,7 @@ public class UI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new UI().setVisible(true);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable equiposDisponibles;

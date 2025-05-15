@@ -24,4 +24,8 @@ public class Item {
     public int getCantidad() {
         return this.cantidad;
     }
+    
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
 }

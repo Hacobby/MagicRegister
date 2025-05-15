@@ -28,6 +28,24 @@ public class RegistroYControl {
         equiposPrestados.add(new Prestacion(nombre, ocupacion, id, horaEntrega, horaRecibo, salon, item));
     };
     
+    public boolean itemExiste(String nombre) {
+        for (Item item : inventario) {
+            if (item.getNombre().equals(nombre)) { // Ignora mayúsculas/minúsculas
+                return true; // El item ya existe
+            }
+        }
+        return false; // No existe
+    }
+    
+    public void actualizarItem(String nombre, int offset) {
+        for (Item item : inventario) {
+            if (item.getNombre().equalsIgnoreCase(nombre)) { // Verificar si el item ya existe                
+                item.setCantidad(item.getCantidad() - offset); // Modificar el item existente
+                break;
+            }
+        }
+    }
+    
     // Set & Get
     
     public ArrayList<Prestacion> getEquiposPrestados() {
