@@ -2,5 +2,3 @@ target/
 .idea/
 /.idea
 /target
-/target/classes
-*.class
